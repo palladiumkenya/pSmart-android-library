@@ -8,7 +8,6 @@
  */
 
 package org.kenyahmis.psmartlibrary.Readers;
-
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
@@ -51,6 +50,7 @@ import com.acs.audiojack.Track1Data;
 import com.acs.audiojack.Track2Data;
 import com.acs.audiojack.TrackData;
 import org.kenyahmis.psmartlibrary.Models.WriteResponse;
+import org.kenyahmis.psmartlibrary.R;
 
 /**
  * The <code>MainActivity</code> class is a preference activity and it
