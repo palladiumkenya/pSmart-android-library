@@ -3,11 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\app\app.iml" filepath="C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pSmart-android-library.iml" filepath="$PROJECT_DIR$/.idea/pSmart-android-library.iml" />
       <module fileurl="file://C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\pSmart-android-library.iml" filepath="C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\pSmart-android-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" filepath="$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" />
-      <module fileurl="file://C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\psmartlibrary\psmartlibrary.iml" filepath="C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\psmartlibrary\psmartlibrary.iml" />
     </modules>
   </component>
 </project>
