@@ -1,1 +1,1 @@
-include ':app', ':psmartlibrary'
+include ':psmartlibrary'

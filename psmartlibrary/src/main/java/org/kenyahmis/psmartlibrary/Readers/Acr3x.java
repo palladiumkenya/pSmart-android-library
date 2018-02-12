@@ -1,13 +1,5 @@
-/*
- * Copyright (C) 2013 Advanced Card Systems Ltd. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Advanced
- * Card Systems Ltd. ("Confidential Information").  You shall not disclose such
- * Confidential Information and shall use it only in accordance with the terms
- * of the license agreement you entered into with ACS.
- */
-
 package org.kenyahmis.psmartlibrary.Readers;
+
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
@@ -52,13 +44,6 @@ import com.acs.audiojack.TrackData;
 import org.kenyahmis.psmartlibrary.Models.WriteResponse;
 import org.kenyahmis.psmartlibrary.R;
 
-/**
- * The <code>MainActivity</code> class is a preference activity and it
- * demonstrates the functionality of ACS audio jack reader.
- *
- * @author Android library
- * @version 1.0, 21 Feb 2013
- */
 public class Acr3x extends PreferenceActivity implements CardReader{
 
     public static final String DEFAULT_MASTER_KEY_STRING = "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
