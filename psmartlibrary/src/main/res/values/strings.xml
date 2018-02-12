@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">pSmartLibrary</string>
-    <string name="action_settings">Reader Settings</string>
+    <string name="app_name">P-SMART</string>
+    <string name="action_settings">Settings</string>
     <string name="action_clear">Clear</string>
-    <string name="action_about">About pSmart Library</string>
+    <string name="action_about">About AJ Demo</string>
     <string name="version">Version</string>
     <string name="unknown_version">Unknown version</string>
     <string name="hello_world">Hello world!</string>
     <string name="pref_title_device">Device</string>
+    <string name="pref_title_read">Read Data</string>
+    <string name="pref_title_write">Write Data</string>
     <string name="pref_title_firmware_version">Firmware version</string>
     <string name="pref_title_status">Status</string>
     <string name="pref_title_battery_level">Battery level</string>
@@ -35,6 +37,7 @@
     <string name="pref_title_get_firmware_version">Get firmware version</string>
     <string name="pref_title_get_status">Get status</string>
     <string name="pref_title_set_sleep_timeout">Set sleep timeout</string>
+    <string name="pref_title_set_patrick">Set patrick preference</string>
     <string name="pref_title_reader_id">Reader ID</string>
     <string name="pref_title_custom_id">Custom ID</string>
     <string name="pref_title_device_id">Device ID</string>
