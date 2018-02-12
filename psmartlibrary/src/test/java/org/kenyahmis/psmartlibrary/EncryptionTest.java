@@ -17,6 +17,7 @@ public class EncryptionTest {
     public void MessageCanBeEncrypted() throws Exception {
 
         String result = x.Encrypt(message);
+        Assert.assertNotNull(result);
         Assert.assertNotEquals(message, result);
     }
 
