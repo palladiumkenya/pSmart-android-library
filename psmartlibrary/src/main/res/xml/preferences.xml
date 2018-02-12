@@ -5,6 +5,14 @@
         android:key="device"
         android:title="@string/pref_title_device" >
         <PreferenceScreen
+            android:key="about_reader_read"
+            android:title="@string/pref_title_read" >
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="about_reader_write"
+            android:title="@string/pref_title_write" >
+        </PreferenceScreen>
+        <PreferenceScreen
             android:key="about_reader"
             android:title="@string/pref_title_about_reader" >
             <Preference
@@ -29,6 +37,9 @@
                 <Preference
                     android:key="about_reader_set_sleep_timeout"
                     android:title="@string/pref_title_set_sleep_timeout" />
+                <Preference
+                    android:key="about_reader_set_patrick"
+                    android:title="@string/pref_title_set_patrick" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
