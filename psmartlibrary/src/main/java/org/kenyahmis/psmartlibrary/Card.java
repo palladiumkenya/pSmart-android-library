@@ -17,5 +17,5 @@ public interface Card {
     //A string message in SHR format
     // Returns:
     //     An object containing the serial number of the card and the response message
-    WriteResponse Write(String message);
+    WriteResponse Write (String message);
 }
