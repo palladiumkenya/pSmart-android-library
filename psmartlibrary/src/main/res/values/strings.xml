@@ -7,7 +7,7 @@
     <string name="action_about">About AJ Demo</string>
     <string name="version">Version</string>
     <string name="unknown_version">Unknown version</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hello pSmart!</string>
     <string name="pref_title_device">Device</string>
     <string name="pref_title_read">Read Data</string>
     <string name="pref_title_write">Write Data</string>
