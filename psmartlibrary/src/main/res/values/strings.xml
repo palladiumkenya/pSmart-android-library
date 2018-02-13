@@ -4,7 +4,7 @@
     <string name="app_name">P-SMART</string>
     <string name="action_settings">Settings</string>
     <string name="action_clear">Clear</string>
-    <string name="action_about">About AJ Demo</string>
+    <string name="action_about">About pSmart Library</string>
     <string name="version">Version</string>
     <string name="unknown_version">Unknown version</string>
     <string name="hello_world">Hello pSmart!</string>

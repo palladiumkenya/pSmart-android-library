@@ -3454,7 +3454,6 @@ public class Acr3x extends PreferenceActivity implements CardReader{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
         addPreferencesFromResource(R.xml.preferences);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -4136,32 +4135,6 @@ public class Acr3x extends PreferenceActivity implements CardReader{
                 mTrack2ServiceCodePreference.getSummary());
         outState.putCharSequence("track2_discretionary_data",
                 mTrack2DiscretionaryDataPreference.getSummary());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        boolean ret = true;
-
-        if(item.getItemId() == R.id.action_clear ) {
-            clearData();
-        }else if (item.getItemId() == R.id.action_about ) {
-
-            showVersionInfo();
-        }else{
-
-                ret = super.onOptionsItemSelected(item);
-
-        }
-
-        return ret;
     }
 
     /**
