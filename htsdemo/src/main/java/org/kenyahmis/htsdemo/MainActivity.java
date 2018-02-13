@@ -19,14 +19,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Add patient Details", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
     }
 
     @Override
@@ -51,13 +51,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void openReaderSettings(View view) {
-        Intent intent = new Intent(this, WriteCardActivity.class);
-        startActivity(intent);
-    }
-
     public void openReaderSettings(MenuItem item) {
-        Intent intent = new Intent(this, WriteCardActivity.class);
+        Intent intent = new Intent(this, ReaderSettingsActivity.class);
         startActivity(intent);
     }
 }

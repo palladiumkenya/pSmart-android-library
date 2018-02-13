@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WriteCardActivity"></activity>
+        <activity android:name=".ReaderSettingsActivity"></activity>
     </application>
 
 </manifest>
