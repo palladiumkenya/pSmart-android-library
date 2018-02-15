@@ -49,6 +49,8 @@ public class Util {
     }
 
     public byte[] ReadBinaryFile(String fileName){
+        //Define byte size
+        //Currently set to fi the SHR message
         byte[] buffer = new byte[100000];
         try {
 

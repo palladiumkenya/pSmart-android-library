@@ -11,14 +11,14 @@ import java.io.IOException;
  * Created by GMwasi on 2/9/2018.
  */
 
-class Encryption {
+public class Encryption {
 
     private String key = "!A%D*F-JaNdRgUkX";
     private String intializationVector = "PdSgVkXp2s5v8y/B";
     private String encryptedString;
     private String originalMessage;
 
-    protected String Encrypt(String message) {
+    public String Encrypt(String message) {
         try {
             IvParameterSpec iv = new IvParameterSpec(intializationVector.getBytes("UTF-8"));
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
@@ -35,7 +35,7 @@ class Encryption {
         return encryptedString;
     }
 
-    protected String Decrypt(String encrypted) {
+    public String Decrypt(String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(intializationVector.getBytes("UTF-8"));
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
