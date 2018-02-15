@@ -7,3 +7,9 @@
 /build
 /captures
 .externalNativeBuild
+TestData/compressedWrite.txt
+TestData/decryptedDecompressedWrite.txt
+TestData/encryptedWrite.txt
+TestData/write.txt
+TestData/writeBinary.txt
+TestData/encryptedCompressedWrite.txt
