@@ -33,4 +33,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/acsaj-1.0.0.jar')
     implementation files('libs/commons-codec-1.11.jar')
+    implementation files('libs/acsbt-1.0.0preview9.jar')
 }
