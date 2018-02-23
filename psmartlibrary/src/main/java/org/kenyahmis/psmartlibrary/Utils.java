@@ -14,7 +14,7 @@ import java.util.Locale;
  * Created by GMwasi on 2/14/2018.
  */
 
-public class Util {
+class Utils {
     // This will reference one line at a time
     String line = null;
     String output =null;

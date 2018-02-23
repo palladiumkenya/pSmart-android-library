@@ -1,4 +1,4 @@
-package org.kenyahmis.psmartlibrary.Readers;
+package org.kenyahmis.psmartlibrary;
 
 /**
  * Created by GMwasi on 2/12/2018.

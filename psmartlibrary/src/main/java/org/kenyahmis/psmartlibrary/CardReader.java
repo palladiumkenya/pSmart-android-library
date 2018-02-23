@@ -1,12 +1,12 @@
-package org.kenyahmis.psmartlibrary.Readers;
+package org.kenyahmis.psmartlibrary;
 
-import org.kenyahmis.psmartlibrary.Models.WriteResponse;
+import org.kenyahmis.psmartlibrary.Models.Response;
 
 /**
  * Created by GMwasi on 2/10/2018.
  */
 
-public interface CardReader {
+interface CardReader {
 
     // Returns:
     //     Data read from the card as byte array
@@ -16,5 +16,5 @@ public interface CardReader {
     //Data to be written on card as byte array
     // Returns:
     //     Message stating if written successfully or if not error message
-    WriteResponse WriteCard(byte[] data);
+    byte[] WriteCard(byte[] data);
 }

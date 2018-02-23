@@ -1,7 +1,6 @@
 package org.kenyahmis.psmartlibrary;
 
-import org.kenyahmis.psmartlibrary.Models.WriteResponse;
-import org.kenyahmis.psmartlibrary.Readers.CardReader;
+import org.kenyahmis.psmartlibrary.Models.Response;
 
 import java.io.IOException;
 
@@ -13,13 +12,15 @@ class CardImplementation implements Card {
     private CardReader _reader;
     private Encryption _encryption;
     private Compression _compression;
-    public CardImplementation() {
+
+    public CardImplementation(CardReaderType type) {
         _compression = new Compression();
         _encryption = new Encryption();
+        //TODO: create reader from type
     }
 
     @Override
-    public String Read() {
+    public Response Read() {
         byte[] cardData = _reader.ReadCard();
         String decompressedMessage = "";
         try {
@@ -28,11 +29,16 @@ class CardImplementation implements Card {
             e.getMessage();
         }
         String decryptedMessage = _encryption.Decrypt(decompressedMessage);
-        return decryptedMessage;
+
+        Response response = new Response();
+        response.setMessage(decryptedMessage);
+        response.isSuccessful();
+
+        return response;
     }
 
     @Override
-    public WriteResponse Write(String message) {
+    public Response Write(String message) {
         byte[] compressedMessage = new byte[0];
         String encryptedMessage = _encryption.Encrypt(message);
         try {
@@ -40,10 +46,12 @@ class CardImplementation implements Card {
         } catch (IOException e) {
             e.getMessage();
         }
-        WriteResponse output = _reader.WriteCard(compressedMessage);
-        WriteResponse response = new WriteResponse();
-        response.setResponseMessage(output.ResponseMessage);
-        response.setSerialNumber(output.SerialNumber);
+        byte[] output = _reader.WriteCard(compressedMessage);
+
+        // TODO convert output to string
+        // TODO get card serialnumber
+        Response response = new Response();
+        // TODO build response message
         return response;
     }
 }
