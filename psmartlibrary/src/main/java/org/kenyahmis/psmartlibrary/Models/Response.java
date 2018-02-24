@@ -1,41 +1,29 @@
 package org.kenyahmis.psmartlibrary.Models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by GMwasi on 2/10/2018.
  */
 
-public class Response {
-    
-    private boolean isSuccessful;
-    private String serialNumber;
-    private String message;
+public abstract class Response {
 
-    public Response() {
+    private List<String> empty = new ArrayList<>();
+    private List<String> errors;
+
+    public Response(List<String> errors) {
+        this.errors = errors != null ? errors : empty;
     }
-
 
     public boolean isSuccessful() {
-        return isSuccessful;
+        return errors.isEmpty();
     }
 
-    public void setSuccessful(boolean successful) {
-        isSuccessful = successful;
+    public List<String> getErrors() {
+        return errors;
     }
 
+    public abstract Object getMessage();
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

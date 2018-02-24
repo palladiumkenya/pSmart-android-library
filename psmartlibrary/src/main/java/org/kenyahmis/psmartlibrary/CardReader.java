@@ -1,6 +1,5 @@
 package org.kenyahmis.psmartlibrary;
 
-import org.kenyahmis.psmartlibrary.Models.Response;
 
 /**
  * Created by GMwasi on 2/10/2018.

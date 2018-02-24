@@ -34,4 +34,5 @@ dependencies {
     implementation files('libs/acsaj-1.0.0.jar')
     implementation files('libs/commons-codec-1.11.jar')
     implementation files('libs/acsbt-1.0.0preview9.jar')
+    compile 'com.google.code.gson:gson:2.8.2'
 }
