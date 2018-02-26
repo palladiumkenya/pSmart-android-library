@@ -55,11 +55,12 @@ import com.acs.bluetooth.BluetoothReaderGattCallback.OnConnectionStateChangeList
 import com.acs.bluetooth.BluetoothReaderManager;
 import com.acs.bluetooth.BluetoothReaderManager.OnReaderDetectionListener;
 import org.kenyahmis.psmartlibrary.R;
+import org.kenyahmis.psmartlibrary.Utils;
 
 
-public class ReaderActivity extends Activity implements
+public class ReaderSettingsActivity extends Activity implements
         TxPowerDialogFragment.TxPowerDialogListener {
-    public static final String TAG = ReaderActivity.class.getSimpleName();
+    public static final String TAG = ReaderSettingsActivity.class.getSimpleName();
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
@@ -497,7 +498,7 @@ public class ReaderActivity extends Activity implements
                             @Override
                             public void run() {
                                 if (status != BluetoothGatt.GATT_SUCCESS) {
-                                    Toast.makeText(ReaderActivity.this,
+                                    Toast.makeText(ReaderSettingsActivity.this,
                                             "Failed to read device info!",
                                             Toast.LENGTH_SHORT).show();
                                     return;
@@ -614,11 +615,11 @@ public class ReaderActivity extends Activity implements
                                 if (result != BluetoothGatt.GATT_SUCCESS) {
                                     /* Fail */
                                     Toast.makeText(
-                                            ReaderActivity.this,
+                                            ReaderSettingsActivity.this,
                                             "The device is unable to set notification!",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(ReaderActivity.this,
+                                    Toast.makeText(ReaderSettingsActivity.this,
                                             "The device is ready to use!",
                                             Toast.LENGTH_SHORT).show();
                                 }
@@ -979,7 +980,7 @@ public class ReaderActivity extends Activity implements
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(ReaderActivity.this,
+                                    Toast.makeText(ReaderSettingsActivity.this,
                                             "The device is not supported!",
                                             Toast.LENGTH_SHORT).show();
 

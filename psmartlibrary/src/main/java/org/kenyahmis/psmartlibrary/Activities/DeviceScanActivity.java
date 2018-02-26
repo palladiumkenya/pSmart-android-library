@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -169,9 +168,9 @@ public class DeviceScanActivity extends ListActivity {
             return;
         }
         scanLeDevice(false);
-        final Intent intent = new Intent(this, ReaderActivity.class);
-        intent.putExtra(ReaderActivity.EXTRAS_DEVICE_NAME, device.getName());
-        intent.putExtra(ReaderActivity.EXTRAS_DEVICE_ADDRESS,
+        final Intent intent = new Intent(this, ReaderSettingsActivity.class);
+        intent.putExtra(ReaderSettingsActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(ReaderSettingsActivity.EXTRAS_DEVICE_ADDRESS,
                 device.getAddress());
         startActivity(intent);
     }
