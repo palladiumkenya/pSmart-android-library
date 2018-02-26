@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.kenyahmis.psmartlibrary.Activities.DeviceScanActivity;
 import org.kenyahmis.psmartlibrary.CardReaderType;
 import org.kenyahmis.psmartlibrary.Models.Response;
 import org.kenyahmis.psmartlibrary.PSmartCard;
@@ -24,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PSmartCard pSmartCard = new PSmartCard(CardReaderType.AcrBluetooth);
+        /*PSmartCard pSmartCard = new PSmartCard(CardReaderType.AcrBluetooth);
         Response readResponse = pSmartCard.Read();
-        String shr = (String)readResponse.getMessage();
+        String shr = (String)readResponse.getMessage();*/
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openReaderSettings(MenuItem item) {
-        Intent intent = new Intent(this, ReaderSettingsActivity.class);
+        Intent intent = new Intent(this, DeviceScanActivity.class);
         startActivity(intent);
     }
 }
