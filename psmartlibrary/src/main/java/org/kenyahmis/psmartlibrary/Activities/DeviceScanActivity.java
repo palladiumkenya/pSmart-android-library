@@ -42,7 +42,9 @@ public class DeviceScanActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setTitle(R.string.title_devices);
+        //todo create action bar to display this
+        //getActionBar().setTitle(R.string.title_devices);
+
         mHandler = new Handler();
 
         /*
