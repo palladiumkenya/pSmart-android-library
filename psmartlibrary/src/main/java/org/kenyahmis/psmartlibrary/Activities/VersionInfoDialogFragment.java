@@ -1,12 +1,3 @@
-/*
- * Copyright (C) 2015 Advanced Card Systems Ltd. All Rights Reserved.
- * 
- * This software is the confidential and proprietary information of Advanced
- * Card Systems Ltd. ("Confidential Information"). You shall not disclose such
- * Confidential Information and shall use it only in accordance with the terms
- * of the license agreement you entered into with ACS.
- */
-
 package org.kenyahmis.psmartlibrary.Activities;
 
 import android.app.Activity;
@@ -23,9 +14,6 @@ import org.kenyahmis.psmartlibrary.R;
 /**
  * The <code>VersionInfoDialogFragment</code> class shows the version
  * information.
- * 
- * @author Godfrey Chung
- * @version 1.0, 28 May 2015
  */
 public class VersionInfoDialogFragment extends DialogFragment {
 

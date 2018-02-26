@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- * Copyright (C) 2014 Advanced Card Systems Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.kenyahmis.psmartlibrary.Activities;
 
 import java.util.ArrayList;
@@ -47,7 +30,7 @@ import org.kenyahmis.psmartlibrary.R;
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
 public class DeviceScanActivity extends ListActivity {
-    private LeDeviceListAdapter mLeDeviceListAdapter;
+    private DeviceListAdapter mDeviceListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
     private Handler mHandler;
@@ -108,10 +91,10 @@ public class DeviceScanActivity extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() ==  R.id.menu_scan){
-            mLeDeviceListAdapter.clear();
-            scanLeDevice(true);
+            mDeviceListAdapter.clear();
+            scanTheDevice(true);
         }else if(item.getItemId() == R.id.menu_stop){
-            scanLeDevice(false);
+            scanTheDevice(false);
         }else if(item.getItemId() == R.id.menu_about) {
             DialogFragment fragment = new VersionInfoDialogFragment();
             fragment.show(getFragmentManager(), "VersionInfo");
@@ -138,9 +121,9 @@ public class DeviceScanActivity extends ListActivity {
         }
 
         /* Initializes list view adapter. */
-        mLeDeviceListAdapter = new LeDeviceListAdapter();
-        setListAdapter(mLeDeviceListAdapter);
-        scanLeDevice(true);
+        mDeviceListAdapter = new DeviceListAdapter();
+        setListAdapter(mDeviceListAdapter);
+        scanTheDevice(true);
     }
 
     @Override
@@ -157,17 +140,17 @@ public class DeviceScanActivity extends ListActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        scanLeDevice(false);
-        mLeDeviceListAdapter.clear();
+        scanTheDevice(false);
+        mDeviceListAdapter.clear();
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
+        final BluetoothDevice device = mDeviceListAdapter.getDevice(position);
         if (device == null) {
             return;
         }
-        scanLeDevice(false);
+        scanTheDevice(false);
         final Intent intent = new Intent(this, ReaderSettingsActivity.class);
         intent.putExtra(ReaderSettingsActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(ReaderSettingsActivity.EXTRAS_DEVICE_ADDRESS,
@@ -175,7 +158,7 @@ public class DeviceScanActivity extends ListActivity {
         startActivity(intent);
     }
 
-    private synchronized void scanLeDevice(final boolean enable) {
+    private synchronized void scanTheDevice(final boolean enable) {
         if (enable) {
             /* Stops scanning after a pre-defined scan period. */
             mHandler.postDelayed(new Runnable() {
@@ -200,11 +183,11 @@ public class DeviceScanActivity extends ListActivity {
     }
 
     /* Adapter for holding devices found through scanning. */
-    private class LeDeviceListAdapter extends BaseAdapter {
+    private class DeviceListAdapter extends BaseAdapter {
         private ArrayList<BluetoothDevice> mLeDevices;
         private LayoutInflater mInflator;
 
-        public LeDeviceListAdapter() {
+        public DeviceListAdapter() {
             super();
             mLeDevices = new ArrayList<BluetoothDevice>();
             mInflator = DeviceScanActivity.this.getLayoutInflater();
@@ -276,8 +259,8 @@ public class DeviceScanActivity extends ListActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mLeDeviceListAdapter.addDevice(device);
-                    mLeDeviceListAdapter.notifyDataSetChanged();
+                    mDeviceListAdapter.addDevice(device);
+                    mDeviceListAdapter.notifyDataSetChanged();
                 }
             });
         }
