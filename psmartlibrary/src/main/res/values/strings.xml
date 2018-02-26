@@ -128,7 +128,7 @@
     <string name="title_devices">BLE Device Scan</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
     <string name="unknown_device">Unknown device</string>
-    <string name="about">About BTDemo</string>
+    <string name="about">About pSmart</string>
 
     <!-- Activity -->
     <string name="apdu_command">APDU command</string>

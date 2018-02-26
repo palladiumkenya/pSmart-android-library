@@ -3,11 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/htsdemo/htsdemo.iml" filepath="$PROJECT_DIR$/htsdemo/htsdemo.iml" />
-      <module fileurl="file://C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\htsdemo\htsdemo.iml" filepath="C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\htsdemo\htsdemo.iml" />
-      <module fileurl="file://C:\Coffer\Palladium\Code\pSmart-android-library\htsdemo\htsdemo.iml" filepath="C:\Coffer\Palladium\Code\pSmart-android-library\htsdemo\htsdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/pSmart-android-library.iml" filepath="$PROJECT_DIR$/pSmart-android-library.iml" />
-      <module fileurl="file://C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\pSmart-android-library.iml" filepath="C:\Users\patrick\AndroidStudioProjects\pSmart-android-library\pSmart-android-library.iml" />
-      <module fileurl="file://C:\Coffer\Palladium\Code\pSmart-android-library\pSmart-android-library.iml" filepath="C:\Coffer\Palladium\Code\pSmart-android-library\pSmart-android-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" filepath="$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" />
     </modules>
   </component>
