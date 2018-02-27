@@ -15,7 +15,7 @@ public class UtilTest {
 
     @Test
     public void readFile() throws Exception {
-        Util u = new Util();
+        Utils u = new Utils();
         String output = u.ReadFile(originalFile);
         Assert.assertNotEquals(output, "Unable to open file '" + originalFile + "'");
         Assert.assertNotNull(output);
@@ -23,7 +23,7 @@ public class UtilTest {
 
     @Test
     public void writeFile() throws Exception {
-        Util u = new Util();
+        Utils u = new Utils();
         String writeFile = "TestData\\write.txt";
         u.WriteFile(writeFile, text);
         String output = u.ReadFile(writeFile);
@@ -32,7 +32,7 @@ public class UtilTest {
 
     @Test
     public void writeBinaryFile() throws Exception {
-        Util u = new Util();
+        Utils u = new Utils();
         u.WriteBinaryFile(binaryFile, buffer);
         byte[] output = u.ReadBinaryFile(binaryFile);
         Assert.assertTrue(output.length>0);
@@ -40,7 +40,7 @@ public class UtilTest {
 
     @Test
     public void readBinaryFile() throws Exception {
-        Util u = new Util();
+        Utils u = new Utils();
         byte[] output = u.ReadBinaryFile(binaryFile);
         Assert.assertNotEquals(output, "Unable to open file '" + binaryFile + "'");
         Assert.assertTrue(output.length > 0);
@@ -48,7 +48,7 @@ public class UtilTest {
 
     @Test
     public void ReadCompressWrite() throws Exception{
-        Util u = new Util();
+        Utils u = new Utils();
         String compressedFile = "TestData\\compressedWrite.txt";
         u.ReadCompressWrite(originalFile, compressedFile);
         byte[] output = u.ReadBinaryFile(compressedFile);
@@ -57,7 +57,7 @@ public class UtilTest {
 
     @Test
     public void ReadEncryptWrite() throws Exception{
-        Util u = new Util();
+        Utils u = new Utils();
         String encryptedFile = "TestData\\encryptedWrite.txt";
         u.ReadEncryptWrite(originalFile, encryptedFile);
         String output = u.ReadFile(encryptedFile);
@@ -66,7 +66,7 @@ public class UtilTest {
 
     @Test
     public void ReadEncryptCompressWrite() throws Exception{
-        Util u = new Util();
+        Utils u = new Utils();
         u.ReadEncryptCompressWrite(originalFile, encryptedCompressedFile);
         byte[] output = u.ReadBinaryFile(encryptedCompressedFile);
         Assert.assertTrue(output.length > 0);
@@ -74,7 +74,7 @@ public class UtilTest {
 
     @Test
     public void ReadDecompressDecryptWrite() throws Exception{
-        Util u = new Util();
+        Utils u = new Utils();
         String decryptedDecompressedFile = "TestData\\decryptedDecompressedWrite.txt";
         u.ReadEncryptCompressWrite(originalFile, encryptedCompressedFile);
         u.ReadDecompressDecryptWrite(encryptedCompressedFile, decryptedDecompressedFile);

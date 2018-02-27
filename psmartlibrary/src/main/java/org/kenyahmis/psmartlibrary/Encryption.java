@@ -4,21 +4,18 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
-
-import java.io.IOException;
-
+import org.kenyahmis.psmartlibrary.EncrytionKeys;
 /**
  * Created by GMwasi on 2/9/2018.
  */
 
 public class Encryption {
 
-    private String key = "!A%D*F-JaNdRgUkX";
     private String intializationVector = "PdSgVkXp2s5v8y/B";
     private String encryptedString;
     private String originalMessage;
 
-    public String Encrypt(String message) {
+    public String encrypt(String key, String message) { // encyption.encrpt(EncypronKey.SHRKey, message)
         try {
             IvParameterSpec iv = new IvParameterSpec(intializationVector.getBytes("UTF-8"));
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
@@ -35,7 +32,7 @@ public class Encryption {
         return encryptedString;
     }
 
-    public String Decrypt(String encrypted) {
+    public String decrypt(String key, String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(intializationVector.getBytes("UTF-8"));
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
