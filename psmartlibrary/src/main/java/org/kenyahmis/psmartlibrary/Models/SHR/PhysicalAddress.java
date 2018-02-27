@@ -12,15 +12,19 @@ public class PhysicalAddress {
     @SerializedName("VILLAGE")
     @Expose
     private String village;
+
     @SerializedName("WARD")
     @Expose
     private String ward;
+
     @SerializedName("SUB_COUNTY")
     @Expose
     private String subcounty;
+
     @SerializedName("COUNTY")
     @Expose
     private String county;
+
     @SerializedName("NEAREST_LANDMARK")
     @Expose
     private String nearestlandmark;

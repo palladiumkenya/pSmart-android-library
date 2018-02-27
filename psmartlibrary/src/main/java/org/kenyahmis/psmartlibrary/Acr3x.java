@@ -1,9 +1,8 @@
 package org.kenyahmis.psmartlibrary;
 
 //audiojack library
-import org.kenyahmis.psmartlibrary.Models.Response;
 
-class Acr3x implements CardReader{
+public class Acr3x implements CardReader{
 
 
      @Override

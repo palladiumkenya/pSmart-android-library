@@ -1,10 +1,17 @@
 package org.kenyahmis.psmartlibrary;
 
+import org.kenyahmis.psmartlibrary.Models.Addendum.Addendum;
+import org.kenyahmis.psmartlibrary.Models.Addendum.Identifier;
 import org.kenyahmis.psmartlibrary.Models.ReadResponse;
 import org.kenyahmis.psmartlibrary.Models.Response;
+import org.kenyahmis.psmartlibrary.Models.SHR.InternalPatientId;
+import org.kenyahmis.psmartlibrary.Models.SHR.SHRMessage;
+import org.kenyahmis.psmartlibrary.Models.TransmitMessage;
 import org.kenyahmis.psmartlibrary.Models.WriteResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GMwasi on 2/9/2018.
@@ -12,42 +19,30 @@ import java.io.IOException;
 
 public class PSmartCard implements Card {
 
-    private CardReader _reader;
-    private Encryption _encryption;
-    private Compression _compression;
+    private CardReader reader;
+    private Encryption encryption;
+    private Compression compression;
+    private Serializer serializer;
+    private Deserializer deserializer;
 
-    public PSmartCard(CardReaderType type) {
-        _compression = new Compression();
-        _encryption = new Encryption();
-        //TODO: create reader from type
-        initializeReader(type);
-    }
-
-    void initializeReader(CardReaderType type){
-        switch (type){
-            case Acr3x:
-                _reader = new Acr3x();
-                break;
-
-            case AcrBluetooth:
-                _reader = new AcrBluetooth();
-                break;
-
-            default:
-                throw new IllegalArgumentException();
-        }
+    public PSmartCard(CardReader reader) {
+        this.compression = new Compression();
+        this.encryption = new Encryption();
+        this.reader = reader;
+        this.serializer = new Serializer();
+        this.deserializer = new Deserializer();
     }
 
     @Override
     public Response Read() {
-        byte[] cardData = _reader.ReadCard();
+        byte[] cardData = reader.ReadCard();
         String decompressedMessage = "";
         try {
-           decompressedMessage =  _compression.Decompress(cardData);
+           decompressedMessage =  compression.Decompress(cardData);
         } catch (IOException e) {
             e.getMessage();
         }
-        String decryptedMessage = _encryption.Decrypt(decompressedMessage);
+        String decryptedMessage = encryption.decrypt(EncrytionKeys.SHR_KEY, decompressedMessage);
 
         // Mock Message
         String mockMessage = "{\n" +
@@ -203,21 +198,47 @@ public class PSmartCard implements Card {
     }
 
     @Override
-    public Response Write(String message) {
+    public Response Write(String shr) {
+
+        SHRMessage SHRMessage = deserializer.deserialize(SHRMessage.class, shr);
+        Addendum addendum = new Addendum();
+        addendum.setCardDetail(SHRMessage.getCardDetail());
+
+        List<InternalPatientId> internalPatientIds =  SHRMessage.getPatientIdentification().getInternalpatientids();
+        List<Identifier> addendumIdentifiers = new ArrayList<>();
+
+        // loop through the internal identifiers to construct Addendum Identifier
+        for (InternalPatientId id: internalPatientIds ) {
+            Identifier identifier = new Identifier();
+            identifier.setId(id.getID());
+            identifier.setAssigningAuthority(id.getAssigningauthority());
+            identifier.setAssigningFacility(id.getAssigningauthority());
+            identifier.setIdentifierType(id.getIdentifiertype());
+            addendumIdentifiers.add(identifier);
+        }
+
+        addendum.setIdentifiers(addendumIdentifiers);
+
         byte[] compressedMessage = new byte[0];
-        String encryptedMessage = _encryption.Encrypt(message);
+        String encryptedSHR = encryption.encrypt(EncrytionKeys.SHR_KEY, shr);
+
         try {
-             compressedMessage = _compression.Compress(encryptedMessage);
-        } catch (IOException e) {
+             compressedMessage = compression.Compress(encryptedSHR);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
             e.getMessage();
         }
-        byte[] output = _reader.WriteCard(compressedMessage);
 
-        // TODO convert output to string
-        // TODO get card serialnumber
-        String mockMessage = "{\"SerialNumber\" : \"7654554333345-4323455\"}";
-        Response response = new WriteResponse(mockMessage, null);
-        // TODO build response message
+        byte[] output = reader.WriteCard(compressedMessage);
+
+        // TODO: if output is success return valid response
+        // TODO: else return invalid response according to the error
+
+        TransmitMessage transmitMessage = new TransmitMessage(encryptedSHR, addendum);
+        String responseString = encryption.encrypt(EncrytionKeys.TRANSMISSION_KEY, serializer.serialize(transmitMessage));
+
+        Response response = new WriteResponse(responseString, null);
         return response;
     }
 }

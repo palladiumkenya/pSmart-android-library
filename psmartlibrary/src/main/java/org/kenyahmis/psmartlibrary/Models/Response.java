@@ -24,6 +24,6 @@ public abstract class Response {
         return errors;
     }
 
-    public abstract Object getMessage();
+    public abstract String getMessage();
 
 }

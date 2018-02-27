@@ -12,18 +12,23 @@ public class HIVTest {
     @SerializedName("DATE")
     @Expose
     private String date;
+
     @SerializedName("RESULT")
     @Expose
     private String result;
+
     @SerializedName("TYPE")
     @Expose
     private String type;
+
     @SerializedName("FACILITY")
     @Expose
     private String facility;
+
     @SerializedName("STRATEGY")
     @Expose
     private String strategy;
+
     @SerializedName("PROVIDER_DETAILS")
     @Expose
     private ProviderDetail providerdetails;

@@ -24,10 +24,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PSmartCard pSmartCard = new PSmartCard(CardReaderType.AcrBluetooth);
-        Response readResponse = pSmartCard.Read();
-        String shr = (String)readResponse.getMessage();
-
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

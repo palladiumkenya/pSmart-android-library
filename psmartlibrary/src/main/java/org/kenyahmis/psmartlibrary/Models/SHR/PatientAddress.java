@@ -12,6 +12,7 @@ public class PatientAddress {
     @SerializedName("PHYSICAL_ADDRESS")
     @Expose
     private PhysicalAddress physicalAddress;
+
     @SerializedName("POSTAL_ADDRESS")
     @Expose
     private String postaladdress;

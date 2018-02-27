@@ -15,9 +15,11 @@ public class InternalPatientId {
     @SerializedName("IDENTIFIER_TYPE")
     @Expose
     private String identifiertype;
+
     @SerializedName("ASSIGNING_AUTHORITY")
     @Expose
     private String assigningauthority;
+
     @SerializedName("ASSIGNING_FACILITY")
     @Expose
     private String assigningfacility;

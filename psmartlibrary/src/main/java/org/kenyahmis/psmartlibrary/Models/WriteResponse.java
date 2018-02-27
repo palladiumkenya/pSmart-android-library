@@ -7,14 +7,14 @@ import java.util.List;
  */
 
 public class WriteResponse extends Response {
-    private String serialNumber;
+    private String encryptedTransmitMessage;
 
-    public WriteResponse(String serialNumber, List<String> errors){
+    public WriteResponse(String encrypredMessage, List<String> errors){
         super(errors);
-        this.serialNumber = serialNumber;
+        this.encryptedTransmitMessage = encrypredMessage;
     }
 
     public String getMessage(){
-        return this.serialNumber;
+        return this.encryptedTransmitMessage;
     }
 }

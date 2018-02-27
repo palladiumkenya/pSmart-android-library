@@ -132,7 +132,7 @@ class Utils {
 
         Encryption encryption = new Encryption();
         String read = ReadFile(fileName);
-        String encrypted = encryption.Encrypt(read);
+        String encrypted = encryption.encrypt(EncrytionKeys.SHR_KEY,read);
         WriteFile(writeFile, encrypted);
 
     }
@@ -143,7 +143,7 @@ class Utils {
             Encryption encryption = new Encryption();
             Compression compression = new Compression();
             String read = ReadFile(fileName);
-            String encrypted = encryption.Encrypt(read);
+            String encrypted = encryption.encrypt(EncrytionKeys.SHR_KEY, read);
             byte[] compressed = compression.Compress(encrypted);
             WriteBinaryFile(writeFile, compressed);
         } catch (IOException e) {
@@ -158,9 +158,10 @@ class Utils {
             Compression compression = new Compression();
             byte[] read = ReadBinaryFile(fileName);
             String decompressed = compression.Decompress(read);
-            String decrypted = encryption.Decrypt(decompressed);
+            String decrypted = encryption.decrypt(EncrytionKeys.SHR_KEY, decompressed);
             WriteFile(writeFile, decrypted);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
