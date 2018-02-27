@@ -6,7 +6,7 @@ import org.kenyahmis.psmartlibrary.Models.ReadResponse;
 import org.kenyahmis.psmartlibrary.Models.Response;
 import org.kenyahmis.psmartlibrary.Models.SHR.InternalPatientId;
 import org.kenyahmis.psmartlibrary.Models.SHR.SHRMessage;
-import org.kenyahmis.psmartlibrary.Models.TransmitMessage;
+import org.kenyahmis.psmartlibrary.Models.TransmissionMessage;
 import org.kenyahmis.psmartlibrary.Models.WriteResponse;
 
 import java.io.IOException;
@@ -235,7 +235,7 @@ public class PSmartCard implements Card {
         // TODO: if output is success return valid response
         // TODO: else return invalid response according to the error
 
-        TransmitMessage transmitMessage = new TransmitMessage(encryptedSHR, addendum);
+        TransmissionMessage transmitMessage = new TransmissionMessage(encryptedSHR, addendum);
         String responseString = encryption.encrypt(EncrytionKeys.TRANSMISSION_KEY, serializer.serialize(transmitMessage));
 
         Response response = new WriteResponse(responseString, null);

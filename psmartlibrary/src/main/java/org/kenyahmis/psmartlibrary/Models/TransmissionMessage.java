@@ -6,12 +6,12 @@ import org.kenyahmis.psmartlibrary.Models.Addendum.Addendum;
  * Created by Muhoro on 2/27/2018.
  */
 
-public class TransmitMessage {
+public class TransmissionMessage {
 
     private String SHR; // this is encrypted SHR
     private Addendum addendum;
 
-    public TransmitMessage(String shr, Addendum addendum){
+    public TransmissionMessage(String shr, Addendum addendum){
         setSHR(shr);
         setAddendum(addendum);
     }
