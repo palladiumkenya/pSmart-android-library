@@ -8,6 +8,7 @@
 /captures
 .externalNativeBuild
 .idea/vcs.xml
+*.idea
 TestData/compressedWrite.txt
 TestData/decryptedDecompressedWrite.txt
 TestData/encryptedWrite.txt
