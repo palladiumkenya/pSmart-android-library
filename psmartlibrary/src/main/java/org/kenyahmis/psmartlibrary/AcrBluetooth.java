@@ -1,10 +1,17 @@
 package org.kenyahmis.psmartlibrary;
 
+import com.acs.bluetooth.BluetoothReader;
+
 /**
  * Created by GMwasi on 2/10/2018.
  */
 
-public class AcrBluetooth implements CardReader {
+class AcrBluetooth implements CardReader {
+
+    AcrBluetooth(BluetoothReader reader){
+
+    }
+
     @Override
     public byte[] ReadCard() {
         return new byte[0];
@@ -14,4 +21,5 @@ public class AcrBluetooth implements CardReader {
     public byte[] WriteCard(byte[] data) {
         return null;
     }
+
 }
