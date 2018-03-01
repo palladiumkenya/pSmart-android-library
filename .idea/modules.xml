@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/htsdemo/htsdemo.iml" filepath="$PROJECT_DIR$/htsdemo/htsdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/pSmart-android-library.iml" filepath="$PROJECT_DIR$/pSmart-android-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" filepath="$PROJECT_DIR$/psmartlibrary/psmartlibrary.iml" />
     </modules>

@@ -1,1 +1,1 @@
-include ':psmartlibrary', ':htsdemo'
+include ':psmartlibrary'
