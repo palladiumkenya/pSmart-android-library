@@ -2,7 +2,7 @@ package org.kenyahmis.psmartlibrary;
 
 //audiojack library
 
-public class Acr3x implements CardReader{
+class Acr3x implements CardReader{
 
 
      @Override

@@ -1,5 +1,12 @@
 package org.kenyahmis.psmartlibrary;
 
+import android.bluetooth.BluetoothGatt;
+import android.util.Log;
+
+import com.acs.bluetooth.BluetoothReader;
+import com.acs.bluetooth.BluetoothReaderGattCallback;
+import com.acs.bluetooth.BluetoothReaderManager;
+
 import org.kenyahmis.psmartlibrary.Models.Addendum.Addendum;
 import org.kenyahmis.psmartlibrary.Models.Addendum.Identifier;
 import org.kenyahmis.psmartlibrary.Models.ReadResponse;
@@ -25,10 +32,11 @@ public class PSmartCard implements Card {
     private Serializer serializer;
     private Deserializer deserializer;
 
-    public PSmartCard(CardReader reader) {
+
+    public PSmartCard(BluetoothReader btreader){
+        reader = new AcrBluetooth(btreader);
         this.compression = new Compression();
         this.encryption = new Encryption();
-        this.reader = reader;
         this.serializer = new Serializer();
         this.deserializer = new Deserializer();
     }
