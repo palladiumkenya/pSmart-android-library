@@ -224,21 +224,19 @@ public class PSmartCard implements Card {
 
         addendum.setIdentifiers(addendumIdentifiers);
 
-        byte[] compressedMessage = new byte[0];
+
         String encryptedSHR = encryption.encrypt(EncrytionKeys.SHR_KEY, shr);
 
         try {
-             compressedMessage = compression.Compress(encryptedSHR);
+            byte[] compressedMessage = compression.Compress(encryptedSHR);
+            if (reader!=null) {
+                byte[] output = reader.WriteCard(compressedMessage);
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
             e.getMessage();
         }
-
-        if (reader!=null) {
-            byte[] output = reader.WriteCard(compressedMessage);
-        }
-
         // TODO: if output is success return valid response
         // TODO: else return invalid response according to the error
 

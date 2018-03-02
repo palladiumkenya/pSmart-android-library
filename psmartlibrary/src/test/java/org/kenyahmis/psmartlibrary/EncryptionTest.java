@@ -16,15 +16,15 @@ public class EncryptionTest {
     @Test
     public void MessageCanBeEncrypted() throws Exception {
 
-        String result = x.Encrypt(message);
+        String result = x.encrypt(EncrytionKeys.SHR_KEY, message);
         Assert.assertNotNull(result);
         Assert.assertNotEquals(message, result);
     }
 
     @Test
     public void MessageCanBeDecrypted() throws Exception {
-        String result = x.Encrypt(message);
-        String messageDecrypt = x.Decrypt(result);
+        String result = x.encrypt(EncrytionKeys.SHR_KEY,message);
+        String messageDecrypt = x.decrypt(EncrytionKeys.SHR_KEY, result);
         Assert.assertEquals(message, messageDecrypt);
     }
 }
