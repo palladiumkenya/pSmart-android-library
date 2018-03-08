@@ -6,5 +6,4 @@ package org.kenyahmis.psmartlibrary;
 
 public final class EncrytionKeys {
     public static final String SHR_KEY = "!A%D*F-JaNdRgUkX";
-    public static final String TRANSMISSION_KEY = "!A%D*F-JaNdRgUkX";
 }

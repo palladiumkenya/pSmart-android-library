@@ -241,9 +241,8 @@ public class PSmartCard implements Card {
         // TODO: else return invalid response according to the error
 
         TransmissionMessage transmitMessage = new TransmissionMessage(encryptedSHR, addendum);
-        String responseString = encryption.encrypt(EncrytionKeys.TRANSMISSION_KEY, serializer.serialize(transmitMessage));
-
-        Response response = new WriteResponse(responseString, null);
+        String transmitString = serializer.serialize(transmitMessage);
+        Response response = new WriteResponse(transmitString, null);
         return response;
     }
 }
