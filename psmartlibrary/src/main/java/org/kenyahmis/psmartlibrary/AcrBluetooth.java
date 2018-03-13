@@ -8,7 +8,6 @@ import com.acs.bluetooth.BluetoothReader;
 
 import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
-import org.kenyahmis.psmartlibrary.Models.HexString;
 
 import java.util.ArrayList;
 
