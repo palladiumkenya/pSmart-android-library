@@ -11,7 +11,6 @@ import org.kenyahmis.psmartlibrary.AcosCard.SecurityOptionRegister;
 import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
 import org.kenyahmis.psmartlibrary.Models.ApduCommand;
-import org.kenyahmis.psmartlibrary.Models.HexString;
 import org.kenyahmis.psmartlibrary.userFiles.UserFile;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ class AcrBluetooth implements CardReader {
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
+    private byte[] responseApdu = null;
     private byte[] byteResponse = null;
     private boolean successfulResponse = false;
 
@@ -283,6 +283,7 @@ class AcrBluetooth implements CardReader {
                             final int errorCode) {
                         // TODO:
                         responseInHexString = getResponseString(apdu, errorCode);
+                        responseApdu = apdu;
                         apduAvailable = true;
                     }
 
@@ -497,20 +498,143 @@ class AcrBluetooth implements CardReader {
         return "Unknown error.";
     }
 
-    public void clearCard() throws Exception
+    public String getErrorMessage(byte[] statusWord)
     {
+        if (statusWord == null )
+            return "Invalid Parameters.";
 
+        else if (statusWord[0] == (byte)0x6B && statusWord[1] == (byte)0x20)
+            return "Amount too large.";
+
+        else if (statusWord[0] == (byte)0x62 && statusWord[1] == (byte)0x81)
+            return "Account data may be corrupted.";
+
+        else if (statusWord[0] == (byte)0x67 && statusWord[1] == (byte)0x00)
+            return "Specified Length plus offset is larger than record length.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x66)
+            return "Command not available; option bit not set.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x81)
+            return "Command incompatible with file structure.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x82)
+            return "Security status not satisfied; PIN not submitted prior to issuing this command.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x83)
+            return "Specified code is locked; Terminal Authentication Key is locked, Authentication process cannot be executed.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x85)
+            return "No data available; the INQUIRE ACCOUNT command was not executed immediately prior to the GET RESPONSE command; Mutual authentication not successfully completed prior to the SUBMIT Code command; No file selected.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0xF0)
+            return "Data in account is inconsistent � no access unless in Issuer Mode.";
+
+        else if (statusWord[0] == (byte)0x6A && statusWord[1] == (byte)0x82)
+            return "File does not exist; Account does not exist.";
+
+        else if (statusWord[0] == (byte)0x6A && statusWord[1] == (byte)0x83)
+            return "Record not found � file too short.";
+
+        else if (statusWord[0] == (byte)0x6F && statusWord[1] == (byte)0x00)
+            return "I/O error; data to be accessed resides in invalid address.";
+
+        else if (statusWord[0] == (byte)0x6F && statusWord[1] == (byte)0x10)
+            return "Account Transaction Counter at maximum � no more transaction possible.";
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x88)
+            return "MAC does not match the data.";
+        else if (statusWord[0] == (byte)0x6E && statusWord[1] == (byte)0x00)
+            return "Invalid CLA.";
+
+        else if (statusWord[0] == (byte)0x63)
+        {
+            return String.format("Invalid Pin/key/code; %02X  retries left; MAC cryptographic checksum is wrong.", statusWord[1] & 0x0F);
+        }
+
+        else
+        {
+            return String.format("Unknown Status Word (%02x%02x)", statusWord[0], statusWord[1]);
+        }
     }
 
-    public String submitCode(CODE_TYPE codeType, String code){
-        return null;
+    private void clearCard() throws Exception
+    {
+        ApduCommand apdu = new ApduCommand();
+
+        apdu.setCommand((byte)0x80, (byte)0x30, (byte)0x00, (byte)0x00, (byte)0x00);
+        byte[] apduCommand = apdu.createCommand();
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        if (apdu.getSw()[0] != (byte)0x90)
+            throw new Exception (getErrorMessage(apdu.getSw()));
     }
 
-    public String submitCode(CODE_TYPE codeType, byte[] code){
-        return null;
+    private String submitCode(CODE_TYPE codeType, String code) throws Exception{
+        ApduCommand apdu;
+
+        apdu = new ApduCommand();
+        apdu.setCommand((byte)0x80, (byte)0x20, (byte)codeType._id,(byte)0x00, (byte)0x08);
+
+        apdu.setData(code.getBytes("ASCII"));
+
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        if (apdu.getSw()[0] == (byte)0x63)
+        {
+            int triesLeft = apdu.getSw()[1] - (byte)0xC0;
+
+            if (triesLeft == 0)
+                throw new Exception ("PIN/Code is locked");
+            else if (triesLeft == 1)
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " try left");
+            else
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " tries left");
+        }
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x83)
+            throw new Exception ("PIN/Code is locked");
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x85)
+            throw new Exception ("Authentication incomplete");
+        else if (apdu.getSw()[0] == (byte)0x90)
+            return "Valid";
+        else
+            return "Unknown state";
     }
 
-    public void selectFile(INTERNAL_FILE internalFile) throws Exception{
+    private String submitCode(CODE_TYPE codeType, byte[] code) throws Exception{
+        ApduCommand apdu;
+
+        apdu = new ApduCommand();
+        apdu.setCommand((byte)0x80, (byte)0x20, (byte)codeType._id,(byte)0x00, (byte)0x08);
+        apdu.setData(code);
+
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        if (apdu.getSw()[0] == (byte)0x63)
+        {
+            int triesLeft = apdu.getSw()[1] - (byte)0xC0;
+
+            if (triesLeft == 0)
+                throw new Exception ("PIN/Code is locked");
+            else if (triesLeft == 1)
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " try left");
+            else
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " tries left");
+        }
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x83)
+            throw new Exception ("PIN/Code is locked");
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x85)
+            throw new Exception ("Authentication incomplete");
+        else if (apdu.getSw()[0] == (byte)0x90)
+            return "Valid";
+        else
+            return "Unknown state";
+    }
+
+    private void selectFile(INTERNAL_FILE internalFile) throws Exception{
         byte[] fileID;
 
         if (internalFile == INTERNAL_FILE.MCUID_FILE)
@@ -535,12 +659,27 @@ class AcrBluetooth implements CardReader {
         this.selectFile(fileID);
     }
 
-    public void selectFile(byte[] fileID) throws Exception
+    private void selectFile(byte[] fileID) throws Exception
     {
+        ApduCommand apdu;
 
+        apdu = new ApduCommand();
+        if (fileID == null || fileID.length != 2)
+            throw new Exception("File ID length should be 2 bytes");
+
+        apdu.setCommand((byte)0x80, (byte)0xA4, (byte)0x00,(byte)0x00, (byte)0x02);
+        apdu.setData(fileID);
+        setApduResponse(apdu);
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+
+        //todo: check response and act
     }
 
-    public void configurePersonalizationFile(OptionRegister optionRegister, SecurityOptionRegister securityRegister, byte NumberOfFiles) throws Exception
+
+    public void configurePersonalizationFile(OptionRegister optionRegister,
+                                             SecurityOptionRegister securityRegister, byte NumberOfFiles) throws Exception
     {
         try
         {
@@ -558,64 +697,114 @@ class AcrBluetooth implements CardReader {
         }
     }
 
-    private void formatCard() throws Exception
+    private void setApduResponse(ApduCommand apduCommand){
+        int limit = 5;
+        int counter = 0;
+        while(!apduAvailable)
+        {
+            try{
+                if(counter == limit)
+                    break;
+                Thread.sleep(1000);
+                counter+=1;
+            }
+            catch (Exception ex){ex.printStackTrace();}
+        }
+        if(apduAvailable){
+            apduCommand.setSw(responseApdu);
+        }
+    }
+
+    private void formatCard()
     {
-        // submit code
-        submitCode(CODE_TYPE.AC1, "ACOSTEST");
+        try {
+            // submit code
+            submitCode(CODE_TYPE.AC1, "ACOSTEST");
 
-        // clearCard
-        clearCard();
+            // clearCard
+            clearCard();
 
-        // submit code
-        submitCode(CODE_TYPE.AC1, "ACOSTEST");
+            // submit code
+            submitCode(CODE_TYPE.AC1, "ACOSTEST");
 
-        // select file FF 02
-        selectFile(new byte[] {(byte)0xFF, (byte)0x02});
+            // select file FF 02
+            selectFile(new byte[]{(byte) 0xFF, (byte) 0x02});
 
-        //write card
-        writeRecord((byte)0x00, (byte)0x00, new byte[] {(byte)0x00, (byte)0x00, (byte)0x07, (byte)0x00});
+            //write card
+            writeRecord((byte) 0x00, (byte) 0x00, new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0x00});
 
-        // select card
-        selectFile(new byte[] { (byte)0xFF, (byte)0x04 });
+            // select card
+            selectFile(new byte[]{(byte) 0xFF, (byte) 0x04});
 
-        // submit code
-        submitCode(CODE_TYPE.AC1, "ACOSTEST");
+            // submit code
+            submitCode(CODE_TYPE.AC1, "ACOSTEST");
 
-        // configure personalization
+            // configure personalization
+            //Set Option Registers and Security Option Registers
+            //See Personalization File of ACOS3 Reference Manual for more information
+            OptionRegister optionRegister = new OptionRegister();
 
-
-        //
-        submitCode(CODE_TYPE.IC, "ACOSTEST");
-        selectFile(new byte[] { (byte)0xFF, (byte)0x04 });
-
-        // Write to FF 04
-        //   Write to first record of FF 04 (AA 00)
-        writeRecord((byte)0x00, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x0A, (byte)0x00, (byte)0x00, (byte)0xAA, (byte)0x00, (byte)0x00 });
-
-
-        // Write to second record of FF 04 (BB 22)
-        writeRecord((byte)0x01, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x20, (byte)0x00, (byte)0x00, (byte)0xBB, (byte)0x00, (byte)0x00 });
-
-
-        // write to third record of FF 04 (CC 33)
-        writeRecord((byte)0x02, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x0A, (byte)0x00, (byte)0x00, (byte)0xCC, (byte)0x00, (byte)0x00 });
+            optionRegister.setRequireMutualAuthenticationOnInquireAccount(false);
+            optionRegister.setRequireMutualAuthenticationOnAccountTransaction(false);
+            optionRegister.setEnableRevokeDebitCommand(false);
+            optionRegister.setEnableChangePinCommand(false);
+            optionRegister.setEnableDebitMac(false);
+            optionRegister.setRequirePinDuringDebit(false);
+            optionRegister.setEnableAccount(false);
 
 
-        // write to fourth record of FF 04 (DD 44)
-        writeRecord((byte)0x03, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x00, (byte)0x00 });
+            SecurityOptionRegister securityOptionRegister = new SecurityOptionRegister();
+
+            securityOptionRegister.setIssuerCode(false);
+            securityOptionRegister.setPin(false);
+            securityOptionRegister.setAccessCondition5(false);
+            securityOptionRegister.setAccessCondition4(false);
+            securityOptionRegister.setAccessCondition3(false);
+            securityOptionRegister.setAccessCondition2(false);
+            securityOptionRegister.setAccessCondition1(false);
+
+            //Write record to Personalization File
+            //Number of File = 3
+            //Select Personalization File
+
+            configurePersonalizationFile(optionRegister, securityOptionRegister, (byte)0x07);
+
+            //
+            submitCode(CODE_TYPE.IC, "ACOSTEST");
+            selectFile(new byte[]{(byte) 0xFF, (byte) 0x04});
+
+            // Write to FF 04
+            //   Write to first record of FF 04 (AA 00)
+            writeRecord((byte) 0x00, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x0A, (byte) 0x00, (byte) 0x00, (byte) 0xAA, (byte) 0x00, (byte) 0x00});
 
 
-        // write to fifth record of FF 04 (DD 44)
-        writeRecord((byte)0x04, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x11, (byte)0x00 });
+            // Write to second record of FF 04 (BB 22)
+            writeRecord((byte) 0x01, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x20, (byte) 0x00, (byte) 0x00, (byte) 0xBB, (byte) 0x00, (byte) 0x00});
 
 
-        // write to sixth record of FF 04 (DD 44)
-        writeRecord((byte)0x05, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x22, (byte)0x00 });
+            // write to third record of FF 04 (CC 33)
+            writeRecord((byte) 0x02, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x0A, (byte) 0x00, (byte) 0x00, (byte) 0xCC, (byte) 0x00, (byte) 0x00});
 
 
-        // write to seventh record of FF 04 (DD 44)
-        writeRecord((byte)0x06, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x33, (byte)0x00 });
+            // write to fourth record of FF 04 (DD 44)
+            writeRecord((byte) 0x03, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0xDD, (byte) 0x00, (byte) 0x00});
 
 
+            // write to fifth record of FF 04 (DD 44)
+            writeRecord((byte) 0x04, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0xDD, (byte) 0x11, (byte) 0x00});
+
+
+            // write to sixth record of FF 04 (DD 44)
+            writeRecord((byte) 0x05, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0xDD, (byte) 0x22, (byte) 0x00});
+
+
+            // write to seventh record of FF 04 (DD 44)
+            writeRecord((byte) 0x06, (byte) 0x00, new byte[]{(byte) 0xFF, (byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0xDD, (byte) 0x33, (byte) 0x00});
+
+        }
+
+        catch (Exception ex){
+
+        }
     }
 }
