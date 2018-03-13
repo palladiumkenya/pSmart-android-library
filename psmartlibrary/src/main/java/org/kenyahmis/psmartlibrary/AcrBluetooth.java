@@ -6,13 +6,13 @@ import com.acs.bluetooth.Acr1255uj1Reader;
 import com.acs.bluetooth.Acr3901us1Reader;
 import com.acs.bluetooth.BluetoothReader;
 
-import org.kenyahmis.psmartlibrary.AcosCard.Acos3;
 import org.kenyahmis.psmartlibrary.AcosCard.OptionRegister;
 import org.kenyahmis.psmartlibrary.AcosCard.SecurityOptionRegister;
 import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
 import org.kenyahmis.psmartlibrary.Models.ApduCommand;
 import org.kenyahmis.psmartlibrary.Models.HexString;
+import org.kenyahmis.psmartlibrary.userFiles.UserFile;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 class AcrBluetooth implements CardReader {
 
 
-    private Acos3 acos3 = new Acos3();
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
@@ -111,6 +110,52 @@ class AcrBluetooth implements CardReader {
             return new AcosCardResponse(null, null, new ArrayList<String>(){{add(responseInHexString);}});
         }
 
+    }
+
+    @Override
+    public String readUserFile(UserFile userFile) {
+        return null;
+    }
+
+    @Override
+    public String writeUserFile(String data, UserFile userFile) {
+
+        byte[] fileId = new byte[2];
+        int expLength = 0;
+        String tmpStr = "";
+        byte[] tmpArray = new byte[56];
+
+        try
+        {
+            fileId = userFile.getFileDescriptor().getFileId();
+            expLength = userFile.getFileDescriptor().getExpLength();
+
+            // Select user file
+            //TODO:displayOut(0, 0, "\nSelect File");
+            selectFile(fileId);
+
+            tmpStr = data;
+            tmpArray = new byte[expLength];
+            int indx = 0;
+            while (indx < data.length())
+            {
+                tmpArray[indx] = tmpStr.getBytes()[indx];
+                indx++;
+            }
+            while (indx < expLength)
+            {
+                tmpArray[indx] = (byte)0x00;
+                indx++;
+            }
+
+            writeRecord((byte)0x00, (byte)0x00, tmpArray);
+
+        }
+        catch(Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -495,13 +540,7 @@ class AcrBluetooth implements CardReader {
 
     }
 
-    public void writeRecord (byte recordNumber, byte offset, byte[] dataToWrite) throws Exception
-    {
-
-    }
-
-    public void configurePersonalizationFile(OptionRegister optionRegister,
-                                             SecurityOptionRegister securityRegister, byte NumberOfFiles) throws Exception
+    public void configurePersonalizationFile(OptionRegister optionRegister, SecurityOptionRegister securityRegister, byte NumberOfFiles) throws Exception
     {
         try
         {
@@ -519,16 +558,64 @@ class AcrBluetooth implements CardReader {
         }
     }
 
-    private void formatCard()
+    private void formatCard() throws Exception
     {
         // submit code
+        submitCode(CODE_TYPE.AC1, "ACOSTEST");
 
         // clearCard
+        clearCard();
 
         // submit code
+        submitCode(CODE_TYPE.AC1, "ACOSTEST");
 
         // select file FF 02
+        selectFile(new byte[] {(byte)0xFF, (byte)0x02});
+
+        //write card
+        writeRecord((byte)0x00, (byte)0x00, new byte[] {(byte)0x00, (byte)0x00, (byte)0x07, (byte)0x00});
+
+        // select card
+        selectFile(new byte[] { (byte)0xFF, (byte)0x04 });
+
+        // submit code
+        submitCode(CODE_TYPE.AC1, "ACOSTEST");
+
+        // configure personalization
+
 
         //
+        submitCode(CODE_TYPE.IC, "ACOSTEST");
+        selectFile(new byte[] { (byte)0xFF, (byte)0x04 });
+
+        // Write to FF 04
+        //   Write to first record of FF 04 (AA 00)
+        writeRecord((byte)0x00, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x0A, (byte)0x00, (byte)0x00, (byte)0xAA, (byte)0x00, (byte)0x00 });
+
+
+        // Write to second record of FF 04 (BB 22)
+        writeRecord((byte)0x01, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x20, (byte)0x00, (byte)0x00, (byte)0xBB, (byte)0x00, (byte)0x00 });
+
+
+        // write to third record of FF 04 (CC 33)
+        writeRecord((byte)0x02, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x0A, (byte)0x00, (byte)0x00, (byte)0xCC, (byte)0x00, (byte)0x00 });
+
+
+        // write to fourth record of FF 04 (DD 44)
+        writeRecord((byte)0x03, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x00, (byte)0x00 });
+
+
+        // write to fifth record of FF 04 (DD 44)
+        writeRecord((byte)0x04, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x11, (byte)0x00 });
+
+
+        // write to sixth record of FF 04 (DD 44)
+        writeRecord((byte)0x05, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x22, (byte)0x00 });
+
+
+        // write to seventh record of FF 04 (DD 44)
+        writeRecord((byte)0x06, (byte)0x00, new byte[] { (byte)0xFF, (byte)0x40, (byte)0x00, (byte)0x00, (byte)0xDD, (byte)0x33, (byte)0x00 });
+
+
     }
 }
