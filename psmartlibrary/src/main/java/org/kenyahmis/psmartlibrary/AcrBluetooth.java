@@ -132,6 +132,10 @@ class AcrBluetooth implements CardReader {
 
             // Select user file
             //TODO:displayOut(0, 0, "\nSelect File");
+            authenticate();
+            bluetoothReader.powerOnCard();
+            formatCard();
+
             selectFile(fileId);
 
             tmpStr = data;
@@ -149,6 +153,18 @@ class AcrBluetooth implements CardReader {
             }
 
             writeRecord((byte)0x00, (byte)0x00, tmpArray);
+            int limit = 5;
+            int counter = 0;
+            while(!apduAvailable)
+            {
+                try{
+                    if(counter == limit)
+                        break;
+                    Thread.sleep(1000);
+                    counter+=1;
+                }
+                catch (Exception ex){ex.printStackTrace();}
+            }
 
         }
         catch(Exception exception)
