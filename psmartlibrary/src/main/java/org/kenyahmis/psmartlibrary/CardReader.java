@@ -18,5 +18,5 @@ interface CardReader {
     //Data to be written on card as byte array
     // Returns:
     //     Message stating if written successfully or if not error message
-    byte[] WriteCard(byte[] data);
+    byte[] WriteCard(String data);
 }

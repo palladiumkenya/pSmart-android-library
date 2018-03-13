@@ -13,7 +13,7 @@ class Acr3x implements CardReader{
      }
 
      @Override
-     public byte[] WriteCard(byte[] data) {
+     public byte[] WriteCard(String data) {
          return null;
      }
  }
