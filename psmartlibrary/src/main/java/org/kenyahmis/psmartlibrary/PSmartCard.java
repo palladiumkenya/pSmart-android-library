@@ -233,7 +233,7 @@ public class PSmartCard implements Card {
         try {
             byte[] compressedMessage = compression.Compress(encryptedSHR);
             if (reader!=null) {
-                byte[] output = reader.WriteCard(compressedMessage);
+                //byte[] output = reader.WriteCard(compressedMessage);
             }
         }
         catch (IOException e) {

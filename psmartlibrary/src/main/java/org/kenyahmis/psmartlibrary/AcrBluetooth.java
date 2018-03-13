@@ -6,6 +6,7 @@ import com.acs.bluetooth.Acr1255uj1Reader;
 import com.acs.bluetooth.Acr3901us1Reader;
 import com.acs.bluetooth.BluetoothReader;
 
+import org.kenyahmis.psmartlibrary.AcosCard.Acos3;
 import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
 import org.kenyahmis.psmartlibrary.Models.ApduCommand;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 class AcrBluetooth implements CardReader {
 
 
+    private Acos3 acos3 = new Acos3();
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
