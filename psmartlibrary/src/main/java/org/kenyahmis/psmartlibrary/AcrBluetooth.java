@@ -6,13 +6,11 @@ import com.acs.bluetooth.Acr1255uj1Reader;
 import com.acs.bluetooth.Acr3901us1Reader;
 import com.acs.bluetooth.BluetoothReader;
 
-import org.kenyahmis.psmartlibrary.AcosCard.Acos3;
 import org.kenyahmis.psmartlibrary.AcosCard.OptionRegister;
 import org.kenyahmis.psmartlibrary.AcosCard.SecurityOptionRegister;
 import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
 import org.kenyahmis.psmartlibrary.Models.ApduCommand;
-import org.kenyahmis.psmartlibrary.Models.HexString;
 
 import java.util.ArrayList;
 
@@ -23,10 +21,10 @@ import java.util.ArrayList;
 class AcrBluetooth implements CardReader {
 
 
-    private Acos3 acos3 = new Acos3();
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
+    private byte[] responseApdu = null;
     private byte[] byteResponse = null;
     private boolean successfulResponse = false;
 
@@ -238,6 +236,7 @@ class AcrBluetooth implements CardReader {
                             final int errorCode) {
                         // TODO:
                         responseInHexString = getResponseString(apdu, errorCode);
+                        responseApdu = apdu;
                         apduAvailable = true;
                     }
 
@@ -452,20 +451,83 @@ class AcrBluetooth implements CardReader {
         return "Unknown error.";
     }
 
-    public void clearCard() throws Exception
+    private void clearCard() throws Exception
     {
+        ApduCommand apdu = new ApduCommand();
 
+        apdu.setCommand((byte)0x80, (byte)0x30, (byte)0x00, (byte)0x00, (byte)0x00);
+        byte[] apduCommand = apdu.createCommand();
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        //todo: check response and act
     }
 
-    public String submitCode(CODE_TYPE codeType, String code){
-        return null;
+    private String submitCode(CODE_TYPE codeType, String code) throws Exception{
+        ApduCommand apdu;
+
+        apdu = new ApduCommand();
+        apdu.setCommand((byte)0x80, (byte)0x20, (byte)codeType._id,(byte)0x00, (byte)0x08);
+
+        apdu.setData(code.getBytes("ASCII"));
+
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        if (apdu.getSw()[0] == (byte)0x63)
+        {
+            int triesLeft = apdu.getSw()[1] - (byte)0xC0;
+
+            if (triesLeft == 0)
+                throw new Exception ("PIN/Code is locked");
+            else if (triesLeft == 1)
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " try left");
+            else
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " tries left");
+        }
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x83)
+            throw new Exception ("PIN/Code is locked");
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x85)
+            throw new Exception ("Authentication incomplete");
+        else if (apdu.getSw()[0] == (byte)0x90)
+            return "Valid";
+        else
+            return "Unknown state";
     }
 
-    public String submitCode(CODE_TYPE codeType, byte[] code){
-        return null;
+    private String submitCode(CODE_TYPE codeType, byte[] code) throws Exception{
+        ApduCommand apdu;
+
+        apdu = new ApduCommand();
+        apdu.setCommand((byte)0x80, (byte)0x20, (byte)codeType._id,(byte)0x00, (byte)0x08);
+        apdu.setData(code);
+
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+        setApduResponse(apdu);
+        if (apdu.getSw()[0] == (byte)0x63)
+        {
+            int triesLeft = apdu.getSw()[1] - (byte)0xC0;
+
+            if (triesLeft == 0)
+                throw new Exception ("PIN/Code is locked");
+            else if (triesLeft == 1)
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " try left");
+            else
+                throw new Exception ("Invalid PIN/Code, you only have " + triesLeft + " tries left");
+        }
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x83)
+            throw new Exception ("PIN/Code is locked");
+        else if (apdu.getSw()[0] == (byte)0x69 && apdu.getSw()[1] == (byte)0x85)
+            throw new Exception ("Authentication incomplete");
+        else if (apdu.getSw()[0] == (byte)0x90)
+            return "Valid";
+        else
+            return "Unknown state";
     }
 
-    public void selectFile(INTERNAL_FILE internalFile) throws Exception{
+    private void selectFile(INTERNAL_FILE internalFile) throws Exception{
         byte[] fileID;
 
         if (internalFile == INTERNAL_FILE.MCUID_FILE)
@@ -490,15 +552,28 @@ class AcrBluetooth implements CardReader {
         this.selectFile(fileID);
     }
 
-    public void selectFile(byte[] fileID) throws Exception
+    private void selectFile(byte[] fileID) throws Exception
     {
+        ApduCommand apdu;
 
+        apdu = new ApduCommand();
+        if (fileID == null || fileID.length != 2)
+            throw new Exception("File ID length should be 2 bytes");
+
+        apdu.setCommand((byte)0x80, (byte)0xA4, (byte)0x00,(byte)0x00, (byte)0x02);
+        apdu.setData(fileID);
+        setApduResponse(apdu);
+        byte[] apduCommand = apdu.createCommand();
+
+        bluetoothReader.transmitApdu(apduCommand);
+
+        //todo: check response and act
     }
 
-    public void writeRecord (byte recordNumber, byte offset, byte[] dataToWrite) throws Exception
+    /*public void writeRecord (byte recordNumber, byte offset, byte[] dataToWrite) throws Exception
     {
 
-    }
+    }*/
 
     public void configurePersonalizationFile(OptionRegister optionRegister,
                                              SecurityOptionRegister securityRegister, byte NumberOfFiles) throws Exception
@@ -516,6 +591,24 @@ class AcrBluetooth implements CardReader {
         catch (Exception ex)
         {
             throw new Exception(ex.getMessage());
+        }
+    }
+
+    private void setApduResponse(ApduCommand apduCommand){
+        int limit = 5;
+        int counter = 0;
+        while(!apduAvailable)
+        {
+            try{
+                if(counter == limit)
+                    break;
+                Thread.sleep(1000);
+                counter+=1;
+            }
+            catch (Exception ex){ex.printStackTrace();}
+        }
+        if(apduAvailable){
+            apduCommand.setSw(responseApdu);
         }
     }
 

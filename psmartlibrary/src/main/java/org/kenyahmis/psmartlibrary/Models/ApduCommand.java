@@ -17,6 +17,7 @@ public class ApduCommand {
     public byte P3;
 
     public byte[] data;
+    private byte[] Sw;
 
     public void setCommand(byte Cla, byte Ins, byte P1, byte P2, byte P3){
         this.Cla = Cla;
@@ -42,4 +43,7 @@ public class ApduCommand {
         }
         return bytes;
     }
+
+    public byte[] getSw() {return this.Sw;}
+    public void setSw(byte[] sw) {this.Sw = sw;}
 }
