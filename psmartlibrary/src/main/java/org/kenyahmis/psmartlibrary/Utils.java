@@ -385,4 +385,20 @@ public class Utils {
         return hexString2Bytes(command);
     }
 
+    public static byte[] getTextinHexBytes(String text){
+
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+
+        String command = text.replace(" ", "").replace("\n", "");
+
+        if (command.isEmpty() || command.length() % 2 != 0
+                || isHexNumber(command) == false) {
+            return null;
+        }
+
+        return hexString2Bytes(command);
+    }
+
 }
