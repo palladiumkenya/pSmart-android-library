@@ -451,6 +451,65 @@ class AcrBluetooth implements CardReader {
         return "Unknown error.";
     }
 
+    public String getErrorMessage(byte[] statusWord)
+    {
+        if (statusWord == null )
+            return "Invalid Parameters.";
+
+        else if (statusWord[0] == (byte)0x6B && statusWord[1] == (byte)0x20)
+            return "Amount too large.";
+
+        else if (statusWord[0] == (byte)0x62 && statusWord[1] == (byte)0x81)
+            return "Account data may be corrupted.";
+
+        else if (statusWord[0] == (byte)0x67 && statusWord[1] == (byte)0x00)
+            return "Specified Length plus offset is larger than record length.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x66)
+            return "Command not available; option bit not set.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x81)
+            return "Command incompatible with file structure.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x82)
+            return "Security status not satisfied; PIN not submitted prior to issuing this command.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x83)
+            return "Specified code is locked; Terminal Authentication Key is locked, Authentication process cannot be executed.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x85)
+            return "No data available; the INQUIRE ACCOUNT command was not executed immediately prior to the GET RESPONSE command; Mutual authentication not successfully completed prior to the SUBMIT Code command; No file selected.";
+
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0xF0)
+            return "Data in account is inconsistent � no access unless in Issuer Mode.";
+
+        else if (statusWord[0] == (byte)0x6A && statusWord[1] == (byte)0x82)
+            return "File does not exist; Account does not exist.";
+
+        else if (statusWord[0] == (byte)0x6A && statusWord[1] == (byte)0x83)
+            return "Record not found � file too short.";
+
+        else if (statusWord[0] == (byte)0x6F && statusWord[1] == (byte)0x00)
+            return "I/O error; data to be accessed resides in invalid address.";
+
+        else if (statusWord[0] == (byte)0x6F && statusWord[1] == (byte)0x10)
+            return "Account Transaction Counter at maximum � no more transaction possible.";
+        else if (statusWord[0] == (byte)0x69 && statusWord[1] == (byte)0x88)
+            return "MAC does not match the data.";
+        else if (statusWord[0] == (byte)0x6E && statusWord[1] == (byte)0x00)
+            return "Invalid CLA.";
+
+        else if (statusWord[0] == (byte)0x63)
+        {
+            return String.format("Invalid Pin/key/code; %02X  retries left; MAC cryptographic checksum is wrong.", statusWord[1] & 0x0F);
+        }
+
+        else
+        {
+            return String.format("Unknown Status Word (%02x%02x)", statusWord[0], statusWord[1]);
+        }
+    }
+
     private void clearCard() throws Exception
     {
         ApduCommand apdu = new ApduCommand();
@@ -459,7 +518,8 @@ class AcrBluetooth implements CardReader {
         byte[] apduCommand = apdu.createCommand();
         bluetoothReader.transmitApdu(apduCommand);
         setApduResponse(apdu);
-        //todo: check response and act
+        if (apdu.getSw()[0] != (byte)0x90)
+            throw new Exception (getErrorMessage(apdu.getSw()));
     }
 
     private String submitCode(CODE_TYPE codeType, String code) throws Exception{
