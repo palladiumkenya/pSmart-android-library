@@ -401,4 +401,19 @@ public class Utils {
         return hexString2Bytes(command);
     }
 
+    public static String hexToString(String txtInHex)
+    {
+        byte [] txtInByte = new byte [txtInHex.length() / 2];
+        int j = 0;
+        for (int i = 0; i < txtInHex.length(); i += 3)
+        {
+            txtInByte[j++] = Byte.parseByte(txtInHex.substring(i, i + 2), 16);
+        }
+        return new String(txtInByte);
+    }
+
+    public static String stringToHexString(String text){
+        return toHexString(text.getBytes());
+    }
+
 }

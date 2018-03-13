@@ -11,6 +11,7 @@ public class UtilTest {
         private String encryptedCompressedFile = "TestData\\encryptedCompressedWrite.txt";
         private String binaryFile = "TestData\\writeBinary.txt";
         private String text = "Hello World!";
+        private String hexText = "48 65 6C 6C 6F 20 57 6F 72 6C 64 21 ";
         private byte[] buffer = text.getBytes();
 
     @Test
@@ -81,6 +82,19 @@ public class UtilTest {
         String output = u.ReadFile(decryptedDecompressedFile);
         Assert.assertNotEquals(output, "Unable to open file '" + decryptedDecompressedFile + "'");
         Assert.assertNotNull(output);
+    }
+
+    @Test
+    public void stringToHexString(){
+        String hex = Utils.stringToHexString(text);
+        Assert.assertEquals(hex,hexText);
+    }
+
+    @Test
+    public void hexStringToString(){
+        String str = Utils.hexToString(hexText).trim();
+        //Assert.assertSame(str,text);
+
     }
 
 }

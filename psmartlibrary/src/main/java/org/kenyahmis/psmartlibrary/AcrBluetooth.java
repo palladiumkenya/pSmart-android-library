@@ -6,7 +6,12 @@ import com.acs.bluetooth.Acr1255uj1Reader;
 import com.acs.bluetooth.Acr3901us1Reader;
 import com.acs.bluetooth.BluetoothReader;
 
+import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
+import org.kenyahmis.psmartlibrary.Models.ApduCommand;
+import org.kenyahmis.psmartlibrary.Models.HexString;
+
+import java.util.ArrayList;
 
 /**
  * Created by GMwasi on 2/10/2018.
@@ -18,6 +23,7 @@ class AcrBluetooth implements CardReader {
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
+    private byte[] byteResponse = null;
     private boolean successfulResponse = false;
 
     private String TAG = "BluetoothReader";
@@ -31,7 +37,7 @@ class AcrBluetooth implements CardReader {
     }
 
     @Override
-    public byte[] ReadCard() {
+    public AcosCardResponse ReadCard() {
 
         authenticate();
         bluetoothReader.powerOnCard();
@@ -39,7 +45,7 @@ class AcrBluetooth implements CardReader {
 
         }
         selectFile();
-        read();
+        //readRecord();
 
         int max = 5;
         int counter = 0;
@@ -54,13 +60,29 @@ class AcrBluetooth implements CardReader {
 
         if(!apduAvailable)
         {
-            //TODO: return error response
+            return new AcosCardResponse(null, null, new ArrayList<String>(){{add("Response not available");}});
         }
-        return new byte[0];
+
+        else
+        {
+            if(successfulResponse){
+                return new AcosCardResponse(byteResponse, responseInHexString, null);
+            }
+            return new AcosCardResponse(null, null, new ArrayList<String>(){{add(responseInHexString);}});
+        }
+
     }
 
     @Override
-    public byte[] WriteCard(byte[] data) {
+    public byte[] WriteCard(String data) {
+
+        authenticate();
+        bluetoothReader.powerOnCard();
+        if(!checkIfAuthenticated()){
+
+        }
+        selectFile();
+        //writeRecord();
         return null;
     }
 
@@ -330,11 +352,18 @@ class AcrBluetooth implements CardReader {
         return authenticated;
     }
 
-    private boolean read(){
-        byte command[] = Utils.getTextinHexBytes(AcosCommand.READ_BINARY);
-        if(command != null && command.length > 0)
-            return bluetoothReader.transmitApdu(command);
-        return false;
+    private boolean readRecord(byte recordNumber, byte offset, byte lengthToRead){
+        ApduCommand apduCommand = new ApduCommand();
+        apduCommand.setCommand(AcosCommand.CLA, AcosCommand.READ_INS, recordNumber, offset, lengthToRead );
+        return bluetoothReader.transmitApdu(apduCommand.createCommand());
+    }
+
+    private boolean writeRecord(byte recordNumber, byte offset, byte[] dataToWrite){
+        //byte command[] = Utils.getTextinHexBytes(AcosCommand.WRITE_BINARY);
+        ApduCommand apduCommand = new ApduCommand();
+        apduCommand.setCommand(AcosCommand.CLA, AcosCommand.WRITE_INS, recordNumber, offset, (byte)dataToWrite.length);
+        apduCommand.setData(dataToWrite);
+        return bluetoothReader.transmitApdu(apduCommand.createCommand());
     }
 
     private String getResponseString(byte[] response, int errorCode) {
@@ -381,5 +410,18 @@ class AcrBluetooth implements CardReader {
             return "The command failed.";
         }
         return "Unknown error.";
+    }
+
+    private void formatCard()
+    {
+        // submit code
+
+        // clearCard
+
+        // submit code
+
+        // select file FF 02
+
+        //
     }
 }
