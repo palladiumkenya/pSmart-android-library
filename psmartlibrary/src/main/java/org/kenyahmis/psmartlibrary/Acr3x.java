@@ -2,12 +2,14 @@ package org.kenyahmis.psmartlibrary;
 
 //audiojack library
 
+import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
+
 class Acr3x implements CardReader{
 
 
      @Override
-     public byte[] ReadCard() {
-         return new byte[0];
+     public AcosCardResponse ReadCard() {
+         return null;
      }
 
      @Override

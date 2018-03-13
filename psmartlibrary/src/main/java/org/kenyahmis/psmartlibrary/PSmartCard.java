@@ -38,14 +38,17 @@ public class PSmartCard implements Card {
     @Override
     public Response Read() {
         if (reader != null) {
-            byte[] cardData = reader.ReadCard();
-            String decompressedMessage = "";
+            String cardData = reader.ReadCard().hexString;
+            String encryptedData = Utils.hexToString(cardData);
+
+            /*String decompressedMessage = "";
             try {
                 decompressedMessage = compression.Decompress(cardData);
             } catch (IOException e) {
                 e.getMessage();
-            }
-            String decryptedMessage = encryption.decrypt(EncrytionKeys.SHR_KEY, decompressedMessage);
+            }*/
+
+            String decryptedMessage = encryption.decrypt(EncrytionKeys.SHR_KEY, encryptedData);
 
             // Mock Message
             String mockMessage = "{\n" +
@@ -196,7 +199,7 @@ public class PSmartCard implements Card {
                     "  }\n" +
                     "}";
             //todo: replace mock message response with th read message
-            Response response = new ReadResponse(mockMessage, null);
+            Response response = new ReadResponse(decryptedMessage, null);
             return response;
         }
         return null;

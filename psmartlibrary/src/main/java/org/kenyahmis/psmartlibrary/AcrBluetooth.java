@@ -6,7 +6,11 @@ import com.acs.bluetooth.Acr1255uj1Reader;
 import com.acs.bluetooth.Acr3901us1Reader;
 import com.acs.bluetooth.BluetoothReader;
 
+import org.kenyahmis.psmartlibrary.Models.AcosCardResponse;
 import org.kenyahmis.psmartlibrary.Models.AcosCommand;
+import org.kenyahmis.psmartlibrary.Models.HexString;
+
+import java.util.ArrayList;
 
 /**
  * Created by GMwasi on 2/10/2018.
@@ -18,6 +22,7 @@ class AcrBluetooth implements CardReader {
     private boolean authenticated = false;
     private boolean apduAvailable = false;
     private String responseInHexString = null;
+    private byte[] byteResponse = null;
     private boolean successfulResponse = false;
 
     private String TAG = "BluetoothReader";
@@ -31,7 +36,7 @@ class AcrBluetooth implements CardReader {
     }
 
     @Override
-    public byte[] ReadCard() {
+    public AcosCardResponse ReadCard() {
 
         authenticate();
         bluetoothReader.powerOnCard();
@@ -54,13 +59,28 @@ class AcrBluetooth implements CardReader {
 
         if(!apduAvailable)
         {
-            //TODO: return error response
+            return new AcosCardResponse(null, null, new ArrayList<String>(){{add("Response not available");}});
         }
-        return new byte[0];
+
+        else
+        {
+            if(successfulResponse){
+                return new AcosCardResponse(byteResponse, responseInHexString, null);
+            }
+            return new AcosCardResponse(null, null, new ArrayList<String>(){{add(responseInHexString);}});
+        }
+
     }
 
     @Override
     public byte[] WriteCard(byte[] data) {
+        authenticate();
+        bluetoothReader.powerOnCard();
+        if(!checkIfAuthenticated()){
+
+        }
+        selectFile();
+        write();
         return null;
     }
 
@@ -316,6 +336,13 @@ class AcrBluetooth implements CardReader {
 
     private boolean read(){
         byte command[] = Utils.getTextinHexBytes(AcosCommand.READ_BINARY);
+        if(command != null && command.length > 0)
+            return bluetoothReader.transmitApdu(command);
+        return false;
+    }
+
+    private boolean write(){
+        byte command[] = Utils.getTextinHexBytes(AcosCommand.WRITE_BINARY);
         if(command != null && command.length > 0)
             return bluetoothReader.transmitApdu(command);
         return false;
