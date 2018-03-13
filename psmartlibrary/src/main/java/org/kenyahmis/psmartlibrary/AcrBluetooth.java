@@ -290,6 +290,22 @@ class AcrBluetooth implements CardReader {
         return false;
     }
 
+    private boolean createFile(){
+        byte command[] = new byte[]
+        {
+            (byte)0x00,
+            (byte)0x30D40,
+            (byte)0x00,
+            (byte)0x00,
+            (byte)0xDD,
+            (byte)0x55,
+            (byte)0x80
+        };
+        if(command != null && command.length > 0)
+            return bluetoothReader.transmitApdu(command);
+        return false;
+    }
+
     // select file
     private boolean selectFile(){
         byte command[] = Utils.getTextinHexBytes(AcosCommand.SELECT_FILE);
