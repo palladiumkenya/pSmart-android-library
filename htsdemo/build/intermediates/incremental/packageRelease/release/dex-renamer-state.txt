@@ -1,4 +1,0 @@
-#Wed Feb 28 11:24:21 EAT 2018
-base.0=D\:\\PalladiumProjects\\pSmart-android-library\\htsdemo\\build\\intermediates\\transforms\\dex\\release\\0
-path.0=classes.dex
-renamed.0=classes.dex

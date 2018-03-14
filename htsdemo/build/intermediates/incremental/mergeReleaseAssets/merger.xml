@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config=":psmartlibrary"><source path="D:\PalladiumProjects\pSmart-android-library\psmartlibrary\build\intermediates\bundles\release\assets"/></dataSet><dataSet config="main"><source path="D:\PalladiumProjects\pSmart-android-library\htsdemo\src\main\assets"/><source path="D:\PalladiumProjects\pSmart-android-library\htsdemo\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="D:\PalladiumProjects\pSmart-android-library\htsdemo\src\release\assets"/></dataSet></merger>
