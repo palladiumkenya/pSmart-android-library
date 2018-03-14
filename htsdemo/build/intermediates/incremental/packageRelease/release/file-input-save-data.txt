@@ -1,7 +1,0 @@
-#Internal package file, do not edit.
-#Wed Feb 28 11:24:21 EAT 2018
-0.baseType=DIRECTORY
-0.base=D\:\\PalladiumProjects\\pSmart-android-library\\htsdemo\\build\\intermediates\\transforms\\dex\\release\\0
-0.path=classes.dex
-0.set=DEX
-count=1
